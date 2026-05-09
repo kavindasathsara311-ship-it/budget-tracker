@@ -4,16 +4,21 @@ import { env } from '../config/env';
 export class EmailService {
   static async sendEmail(to: string, subject: string, html: string) {
     try {
-      await transporter.sendMail({
+      const info = await transporter.sendMail({
         from: env.SMTP_FROM,
         to,
         subject,
         html,
       });
-    } catch (error) {
-      console.error('Email sending failed:', error);
-      // During development, we don't want to block the user if email fails
-      // throw new Error('Failed to send email'); 
+      console.log(`[Email] Message sent to ${to}: ${info.messageId}`);
+    } catch (error: any) {
+      console.error('[Email] Sending failed:', {
+        to,
+        subject,
+        error: error.message,
+        code: error.code,
+        command: error.command
+      });
     }
   }
 
