@@ -35,7 +35,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/user', userRoutes);
 
 // Health check
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Backend is running' }));
 
 // Error Handling
 app.use(errorHandler);
