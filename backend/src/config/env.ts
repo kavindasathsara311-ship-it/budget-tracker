@@ -17,4 +17,18 @@ const envSchema = z.object({
   SMTP_FROM: z.string(),
 });
 
-export const env = envSchema.parse(process.env);
+try {
+  console.log('Environment Check: NODE_ENV is', process.env.NODE_ENV);
+  if (!process.env.DATABASE_URL) {
+    console.error('CRITICAL: DATABASE_URL is missing from process.env');
+  }
+} catch (e) {}
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error('❌ Invalid environment variables:', JSON.stringify(parsed.error.format(), null, 2));
+  throw new Error('Environment validation failed. Check Vercel logs for details.');
+}
+
+export const env = parsed.data;
