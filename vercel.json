@@ -2,8 +2,8 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/:match*",
-      "destination": "/backend/api/index.ts"
+      "source": "/((?!api/).*)",
+      "destination": "/public/$1"
     }
   ]
 }
