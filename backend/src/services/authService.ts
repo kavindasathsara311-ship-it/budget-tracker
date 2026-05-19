@@ -26,15 +26,12 @@ export class AuthService {
   static async register(name: string, email: string, password: string) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      // Per security hardening: never reveal if email exists
-      // However, for registration we usually tell them it's already in use
-      // or we just send an email to the existing user saying they tried to register.
-      // But the prompt says "Error messages must never reveal whether email exists" 
-      // primarily for login. For registration, it's tricky.
-      // I'll stick to a generic "Registration successful, please check your email" 
-      // even if it exists, but that's confusing. 
-      // Re-reading: "Error messages must never reveal whether email exists"
-      // I'll return success even if user exists but handle it internally.
+      if (!existingUser.isVerified) {
+        // If they exist but aren't verified, send them a new OTP so they aren't stuck!
+        const code = await OtpService.createOtp(existingUser.id);
+        await EmailService.sendOtpEmail(email, code);
+        return { userId: existingUser.id };
+      }
       return { userId: 'pending' }; 
     }
 
