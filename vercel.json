@@ -6,6 +6,10 @@
       "destination": "/api/index.ts"
     },
     {
+      "source": "/((?!api/|.*\\.[a-zA-Z0-9]+$).*)",
+      "destination": "/public/index.html"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/public/$1"
     }
